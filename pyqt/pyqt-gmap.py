@@ -38,4 +38,4 @@ def onClick():
 
 button.clicked.connect(onClick)
 
-sys.exit(app.exit_())
+sys.exit(app.exec_())
