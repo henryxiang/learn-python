@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title Login
+  body
+    form(method="post", action="/login")
+      input(name="username", type="text", placeholder="Username")
+      br/
+      input(name="password", type="password", placeholder="Password")
+      br/
+      input(type="submit" value="Login")
+    p
+      div.error #{error}

@@ -5,7 +5,7 @@ from PyQt4.QtGui import *
 from motionless import *
 from urllib.request import *
 
-app = QApplication(sys.argv)
+app = QtGui.QApplication(sys.argv)
 
 win = QWidget()
 win.setGeometry(40,40,640,750)
