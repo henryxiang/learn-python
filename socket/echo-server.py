@@ -20,7 +20,7 @@ def read_data(sock, end=b'\r\n'):
     data = b''
     while True:
         buffer = sock.recv(1024)
-        print(buffer, flush=True)
+        print(buffer)
         if not buffer:
             sock.close()
             break
@@ -38,18 +38,18 @@ def runServer():
         sock.bind((host, port))
     #    print('server started on %s:%d' % (host, port))
     except socket.error as msg:
-        print('Bind failed. Error: %s' % (str(msg),), flush=True)
+        print('Bind failed. Error: %s' % (str(msg),))
         sys.exit()
 
     # print('server started on %s:%d' % (host, port))
-    print('Server started on %s:%d' % (host, port), flush=True)
+    print('Server started on %s:%d' % (host, port))
 
     sock.listen(10)
 
     while True:
         clientsocket, addr = sock.accept()
 
-        print("Client connected from from %s:%d" % addr, flush=True)
+        print("Client connected from from %s:%d" % addr)
 
         username = login(clientsocket)
 
@@ -64,18 +64,20 @@ def runServer():
 
 
 def login(sock, retry=3):
-    sock.sendall(b'Username: ')
-    username = sock.recv(1024).rstrip(EOL).decode('ascii')
-
-    for _ in range(retry):
-        sock.sendall(b'Password: ')
-        password = sock.recv(1024).rstrip(EOL).decode('ascii')
-        # print("username=%s, password=%s" % (username, password))
-        if password == 'password':
-            print('password correct')
-            return username
-        else:
-            sock.sendall(b'Incorrect password\r\n')
+    try:
+        sock.sendall(b'Username: ')
+        username = sock.recv(1024).rstrip(EOL).decode('ascii')
+        for _ in range(retry):
+            sock.sendall(b'Password: ')
+            password = sock.recv(1024).rstrip(EOL).decode('ascii')
+            # print("username=%s, password=%s" % (username, password))
+            if password == 'password':
+                print('password correct')
+                return username
+            else:
+                sock.sendall(b'Incorrect password\r\n')
+    except:
+        print("Login error")
 
     return ''
 
@@ -88,12 +90,12 @@ def handleEcho(sock, addr):
         if data == b'.exit':
             sock.send(b'Bye!' + EOL)
             sock.close()
-            print("Client disconnected from from %s:%d" % addr, flush=True)
+            print("Client disconnected from from %s:%d" % addr)
             break
         else:
             sock.send(b'=> ' + data + EOL)
             data = b''
-# print('Shutting down server', flush=True)
+# print('Shutting down server')
 # sock.close()
 
 
