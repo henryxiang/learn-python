@@ -9,8 +9,10 @@ import socket
 import time
 import sys
 import select
+import re
 
-host = socket.gethostname()
+# host = socket.gethostname()
+host = ''
 port = 8888
 EOL = b'\r\n'
 userSockets = {}
@@ -78,6 +80,7 @@ def sendGreetings(sock):
     msg = "%s logged in from %s:%d " % (username, *addr)
     msg += "at " + time.ctime(time.time()) + '\r\n'
     sock.send(msg.encode('ascii'))
+    listUsers(sock)
     # sendPrompt(sock)
 
 
@@ -106,20 +109,54 @@ def login(sock, retry=3):
     return ''
 
 
-def handleIncomingData(sock):
+def logoff(sock):
     addr = sock.getpeername()
     username = userSockets[sock]
+    sock.send(b'Bye!' + EOL)
+    sock.close()
+    del(userSockets[sock])
+    msg = '[%s left room]' % (username,)
+    broadcast(sock, msg)
+    print("Client disconnected from from %s:%d" % addr)
+
+
+def listUsers(sock):
+    msg = 'Users in room:\r\n'
+    for s in userSockets:
+        if userSockets[s]:
+            msg += '  ' + userSockets[s] + '\r\n'
+    try:
+        sock.sendall(msg.encode('ascii'))
+    except:
+        return
+
+
+def handleIncomingData(sock):
+    username = userSockets[sock]
     data = sock.recv(1024).rstrip(EOL).decode('ascii')
+    msg = '%s => %s' % (username, data)
     if data == '.exit':
-        sock.send(b'Bye!' + EOL)
-        sock.close()
-        del(userSockets[sock])
-        msg = '[%s left room]' % (username,)
-        broadcast(sock, msg)
-        print("Client disconnected from from %s:%d" % addr)
+        logoff(sock)
+    elif data == '.who':
+        listUsers(sock)
+    elif re.match(r'^@', data):
+        sendPrivateMessage(username, data)
     else:
-        response = '%s: %s' % (username, data)
-        broadcast(sock, response)
+        broadcast(sock, msg)
+
+
+def sendPrivateMessage(fromUser, data):
+    match = re.search(r'^@(\w+)', data)
+    toUser = match.group(1)
+    msg = fromUser + ' => ' + data
+    print('PM to user: ' + toUser)
+    for s in userSockets:
+        if userSockets[s] == toUser:
+            try:
+                s.sendall((msg+'\r\n').encode('ascii'))
+                break
+            except:
+                return
 
 
 def broadcast(fromSock, msg):
