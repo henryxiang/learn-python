@@ -12,12 +12,12 @@ from datetime import date
 
 fake = Faker()
 
-dbURL = {
+connectionParams = {
     'host': 'localhost',
     'user': 'root',
     'db': 'test'
 }
-conn = db.connect(**dbURL)
+conn = db.connect(**connectionParams)
 # conn.isolation_level = None
 
 c = conn.cursor()
