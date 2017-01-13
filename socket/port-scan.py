@@ -7,6 +7,7 @@ Created on Wed Mar 16 17:48:01 2016
 import socket
 import sys
 
+
 def scanPort(host, port):
     sock = socket.socket()
     sock.settimeout(2)
@@ -17,11 +18,11 @@ def scanPort(host, port):
         print("port %d is closed" % (port), flush=True)
     sock.close()
 
+
 host = 'localhost'
 if len(sys.argv) == 2 and sys.argv[1]:
     host = sys.argv[1]
 
 print('Scanning %s' % (host,), flush=True)
-for port in range(1,1025):
+for port in range(1, 1025):
     scanPort(host, port)
-    

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 Created on Fri Sep 11 21:16:45 2015
@@ -14,7 +15,7 @@ fake = Faker()
 
 dbURL = 'example.db'
 conn = db.connect(dbURL)
-#conn.isolation_level = None
+# conn.isolation_level = None
 
 c = conn.cursor()
 

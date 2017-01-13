@@ -153,7 +153,7 @@ def sendPrivateMessage(fromUser, data):
     for s in userSockets:
         if userSockets[s] == toUser:
             try:
-                s.sendall((msg+'\r\n').encode('ascii'))
+                s.sendall((msg + '\r\n').encode('ascii'))
                 break
             except:
                 return

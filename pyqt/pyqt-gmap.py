@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
+from PyQt4 import QtGui
 from PyQt4.QtGui import *
 from motionless import *
 from urllib.request import *
@@ -8,7 +9,7 @@ from urllib.request import *
 app = QtGui.QApplication(sys.argv)
 
 win = QWidget()
-win.setGeometry(40,40,640,750)
+win.setGeometry(40, 40, 640, 750)
 win.setWindowTitle("Google Map")
 win.show()
 
@@ -27,6 +28,7 @@ vbox.addWidget(label)
 win.setLayout(vbox)
 win.show()
 
+
 def onClick():
     global search, label
     gmap = DecoratedMap(size_x=640, size_y=640)
@@ -35,6 +37,7 @@ def onClick():
     img = QImage.fromData(imgData)
     label.setPixmap(QPixmap.fromImage(img))
     search.setText("")
+
 
 button.clicked.connect(onClick)
 
